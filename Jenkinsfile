@@ -4,18 +4,18 @@ pipeline {
         stage('Docker Build and Tag') {
             steps {
               
-                sh 'docker build -t webdemo:latest .' 
-                sh 'docker tag webdemo brainvo/webdemo:latest'
-                sh 'docker tag webdemo brainvo/webdemo:$BUILD_NUMBER'
+                sh 'docker build -t blog-demo:latest .' 
+                sh 'docker tag blog-demo brainvo/blog-demo:latest'
+                sh 'docker tag blog-demo brainvo/blog-demo:$BUILD_NUMBER'
                
             }
         }
      
     stage('Publish image to Docker Hub') {
         steps {
-            withDockerRegistry([ credentialsId: "dockerHub", url: "" ]) {
-                sh  'docker push brainvo/webdemo:latest'
-                sh  'docker push brainvo/webdemo:$BUILD_NUMBER' 
+            withDockerRegistry([ credentialsId: "02bf2b58-6396-459e-a27e-809f4dbe9cb4", url: "" ]) {
+                sh  'docker push brainvo/blog-demo:latest'
+                sh  'docker push brainvo/blog-demo:$BUILD_NUMBER' 
             }
                   
         }
