@@ -1,30 +1,45 @@
-node {
-    def app
+pipeline{
 
-    stage('Clone repository') {
+	agent {label 'linux'}
+
+	environment {
+		DOCKERHUB_CREDENTIALS=credentials('docker-hub-webdemo')
+	}
+
+	stages {
+	    
+	    stage('Clone repository') {
         /* Let's make sure we have the repository cloned to our workspace */
         checkout scm
-    }
-
-    stage('Build image') {
-        /* This builds the actual image; synonymous to
-         * docker build on the command line */
-        app = docker.build("brainvo/blog-demo")
-    }
-
-    stage('Test image') {
-        /* Ideally, we would run a test framework against our image.
-         * For this example, we're using a Volkswagen-type approach ;-) */
-
-        app.inside {
-            sh 'echo "Tests passed"'
         }
-    }
 
-    stage('Push image') {
-        withDockerRegistry([ credentialsId: "docker-hub-webdemo", url: "" ]) {
-            app.push("${env.BUILD_NUMBER}")
-            app.push("latest")
-        }
-    }
+
+		stage('Build') {
+
+			steps {
+				sh 'docker build -t brianvo/blog-demo:latest .'
+			}
+		}
+
+		stage('Login') {
+
+			steps {
+				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+			}
+		}
+
+		stage('Push') {
+
+			steps {
+				sh 'docker push brianvo/blog-demo:latest'
+			}
+		}
+	}
+
+	post {
+		always {
+			sh 'docker logout'
+		}
+	}
+
 }
