@@ -3,7 +3,7 @@ pipeline{
 	agent {label 'linux'}
 
 	environment {
-		DOCKERHUB_CREDENTIALS=credentials('dockerhub')
+		DOCKERHUB_CREDENTIALS=credentials('docker-hub-webdemo')
 	}
 
 	stages {
@@ -18,7 +18,7 @@ pipeline{
 		stage('Build') {
 
 			steps {
-				sh 'docker build -t thetips4you/nodeapp_test:latest .'
+				sh 'docker build -t brianvo/blog-demo:latest .'
 			}
 		}
 
@@ -32,7 +32,7 @@ pipeline{
 		stage('Push') {
 
 			steps {
-				sh 'docker push thetips4you/nodeapp_test:latest'
+				sh 'docker push brianvo/blog-demo:latest'
 			}
 		}
 	}
