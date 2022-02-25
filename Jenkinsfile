@@ -23,7 +23,7 @@ node {
 
     stage('Push image') {
         withDockerRegistry([ credentialsId: "docker-hub-webdemo", url: "" ]) {
-        // sh "docker tag blog-demo brianvo/blog-demo"
+        sh 'docker tag blog-demo brianvo/blog-demo'
         app.push("${env.BUILD_NUMBER}")
         }
     }
