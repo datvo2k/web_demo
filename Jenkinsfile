@@ -3,18 +3,22 @@ pipeline{
 	agent {label 'linux'}
 
 	environment {
-		DOCKERHUB_CREDENTIALS=credentials('docker-hub-webdemo')
+		DOCKERHUB_CREDENTIALS=credentials('dockerhub')
 	}
+
+	stages {
 	    
-	    stage('Clone repository') {
-        /* Let's make sure we have the repository cloned to our workspace */
-        checkout scm
-        }
+	    stage('gitclone') {
+
+			steps {
+				check scm
+			}
+		}
 
 		stage('Build') {
 
 			steps {
-				sh 'docker build -t brianvo/blog-demo:latest .'
+				sh 'docker build -t thetips4you/nodeapp_test:latest .'
 			}
 		}
 
@@ -28,7 +32,7 @@ pipeline{
 		stage('Push') {
 
 			steps {
-				sh 'docker push brianvo/blog-demo:latest'
+				sh 'docker push thetips4you/nodeapp_test:latest'
 			}
 		}
 	}
