@@ -21,8 +21,9 @@ node {
         }
     }
 
- stage('Push image') {
+    stage('Push image') {
         withDockerRegistry([ credentialsId: "docker-hub-webdemo", url: "" ]) {
         bat "docker push brianvo/blog-demo:build"
         }
+    }
 }
