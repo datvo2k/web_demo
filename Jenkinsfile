@@ -7,10 +7,7 @@ pipeline {
   agent any
   stages {
     stage('Cloning Git') {
-      steps {
-        git([url: 'https://github.com/datvo2k/web_demo.git', branch: 'main', credentialsId: 'github'])
-
-      }
+        checkout scm
     }
     stage('Building image') {
       steps{
