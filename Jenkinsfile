@@ -8,8 +8,8 @@ pipeline {
   stages {
     stage('Cloning Git') {
       steps {
-        check scm
- 
+        git([url: 'https://github.com/datvo2k/web_demo.git', branch: 'main', credentialsId: 'github'])
+
       }
     }
     stage('Building image') {
