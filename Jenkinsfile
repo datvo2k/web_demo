@@ -1,5 +1,4 @@
-pipeline{
-
+node{
 	environment {
 		DOCKERHUB_CREDENTIALS=credentials('docker-hub-webdemo')
 	}
