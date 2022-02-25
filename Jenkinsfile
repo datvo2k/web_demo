@@ -1,23 +1,34 @@
-pipeline {
-    agent any
-    stages {
-        stage('Docker Build and Tag') {
-            steps {
-              
-                sh 'docker build -t blog-demo:latest .' 
-                sh 'docker tag blog-demo brainvo/blog-demo:latest'
-                sh 'docker tag blog-demo brainvo/blog-demo:$BUILD_NUMBER'
-               
-            }
+node {
+    def app
+
+    stage('Clone repository') {
+        /* Let's make sure we have the repository cloned to our workspace */
+        checkout scm
+    }
+
+    stage('Build image') {
+        /* This builds the actual image; synonymous to
+         * docker build on the command line */
+        app = docker.build("brainvo/blog-demo")
+    }
+
+    stage('Test image') {
+        /* Ideally, we would run a test framework against our image.
+         * For this example, we're using a Volkswagen-type approach ;-) */
+
+        app.inside {
+            sh 'echo "Tests passed"'
         }
-     
-    stage('Publish image to Docker Hub') {
-        steps {
-            withDockerRegistry([ credentialsId: "02bf2b58-6396-459e-a27e-809f4dbe9cb4", url: "" ]) {
-                sh  'docker push brainvo/blog-demo:latest'
-                sh  'docker push brainvo/blog-demo:$BUILD_NUMBER' 
-            }
-                  
+    }
+
+    stage('Push image') {
+        /* Finally, we'll push the image with two tags:
+         * First, the incremental build number from Jenkins
+         * Second, the 'latest' tag.
+         * Pushing multiple tags is cheap, as all the layers are reused. */
+        docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-webdemo') {
+            app.push("${env.BUILD_NUMBER}")
+            app.push("latest")
         }
     }
 }
