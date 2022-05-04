@@ -15,10 +15,16 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
+      # get the date of the build
+      - name: Get current date 
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d--%M-%S')"
+
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v1
         id: buildx
 
+      # create cache build docker
       - name: Cache Docker Image Layers
         uses: actions/cache@v2
         with:
@@ -35,7 +41,7 @@ jobs:
           file: ./Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/test-github
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/test-github:${{ steps.date.outputs.date }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
