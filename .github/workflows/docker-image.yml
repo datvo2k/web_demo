@@ -17,7 +17,7 @@ jobs:
           DOCKER_USER: ${{secrets.DOCKER_HUB_USERNAME}}
           DOCKER_PASSWORD: ${{secrets.DOCKER_HUB_TOKEN}}
         run: |
-          docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_TOKEN
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
       - name: Build the Docker image
         run: docker build . --file Dockerfile --tag brianvo/test-github:$(date +%s)
 
